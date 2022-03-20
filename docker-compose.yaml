@@ -1,0 +1,53 @@
+version: '3.7'
+    
+services:
+  database:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: events_scraper_db
+      POSTGRES_USER: events_scraper_user
+      POSTGRES_PASSWORD: events_scraper12345
+    ports: 
+      - 5432:5432
+    volumes:
+      - database-events_scraper:/var/lib/postgresql/data/
+  events-scraper-service:
+    build: ./events_scraper_backend/
+    restart: unless-stopped
+    environment: 
+      DEBUG: "True"
+      DB_NAME: events_scraper_db
+      DB_USER: events_scraper_user
+      DB_PASSWORD: events_scraper12345
+      DB_HOST: database
+      DB_PORT: 5432
+    env_file: 
+      - events_scraper_backend/.env
+    entrypoint: bash run.sh
+    volumes:
+      - ./events_scraper_backend:/events-scraper
+    ports:
+      - 8000:8000
+    depends_on:
+      - database
+  events-scraper-qcluster:
+    build: ./events_scraper_backend/
+    restart: unless-stopped
+    environment: 
+      DEBUG: "True"
+      DB_NAME: events_scraper_db
+      DB_USER: events_scraper_user
+      DB_PASSWORD: events_scraper12345
+      DB_HOST: database
+      DB_PORT: 5432
+    env_file: 
+      - events_scraper_backend/.env
+    entrypoint: bash run_qcluster.sh
+    volumes:
+      - ./events_scraper_backend:/events-scraper
+    depends_on:
+      - database
+      - events-scraper-service
+volumes: 
+    database-events_scraper:
