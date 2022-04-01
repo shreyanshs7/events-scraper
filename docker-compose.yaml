@@ -49,5 +49,15 @@ services:
     depends_on:
       - database
       - events-scraper-service
+  events-frontend:
+    build: ./events_frontend/
+    ports:
+      - 4200:4200
+    volumes:
+       - ./events_frontend:/usr/src/app/events_frontend
+       - /usr/src/app/events_frontend/node_modules
+    depends_on:
+      - database
+      - events-scraper-service
 volumes: 
     database-events_scraper:

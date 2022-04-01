@@ -4,7 +4,6 @@ import  {MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ApiService } from './api.service';
 import { Events } from './events';
-import { FormControl } from '@angular/forms';
 
 
 @Component({
